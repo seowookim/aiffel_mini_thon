@@ -23,7 +23,7 @@ gen_paths = ['./models/kogpt2_chatbot_no_lora_0.1',
 
 # 하이퍼파라미터 그리드
 thresholds = [0.5, 0.7, 0.9]
-max_lengths = [128]
+max_length = 128
 min_new_tokens_list = [2, 6]
 repetition_penalties = [1.0, 2.0, 5.0]
 do_samples = [True, False]
@@ -84,7 +84,7 @@ cls_tokenizer = PreTrainedTokenizerFast.from_pretrained(cls_path,
                         pad_token=PAD, mask_token=MASK)
 
 
-def predict_listener_empathy(input_text, model, tokenizer, threshold):
+def predict_listener_empathy(input_text, model, tokenizer, threshold, max_length=max_length):
     # 모델을 평가 모드로 전환
     model.eval()
 
@@ -155,8 +155,8 @@ for gen_path in gen_paths:
     for threshold in thresholds:
         predicted_labels = predict_listener_empathy(input_text, cls_model, cls_tokenizer, threshold)
 
-        for i, (max_length, min_new_tokens, repetition_penalty, do_sample, num_beams, temperature, top_k, top_p) in enumerate(itertools.product(
-                max_lengths, min_new_tokens_list, repetition_penalties, do_samples, num_beams_list, temperatures, top_ks, top_ps)):
+        for i, (min_new_tokens, repetition_penalty, do_sample, num_beams, temperature, top_k, top_p) in enumerate(itertools.product(
+                min_new_tokens_list, repetition_penalties, do_samples, num_beams_list, temperatures, top_ks, top_ps)):
             
             print(f'gen_path: {gen_path}, threshold: {threshold}, max_length: {max_length}, min_new_tokens: {min_new_tokens}, repetition_penalty: {repetition_penalty}, do_sample: {do_sample}, num_beams: {num_beams},temperature: {temperature}, top_k: {top_k}, top_p: {top_p}')
             
