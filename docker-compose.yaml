@@ -1,0 +1,157 @@
+#volumes는 docker-compose파일이 있는위치에서 상대경로를 지정
+  #좋은 방식은 아닌거 같지만, 공부중이므로, 호스트 운영체제에 저장함
+  #호스트에 저장하면, 컨테이너가 삭제되어도 데이터가 남아있고, 이미지 크기도 작아짐
+
+version: '3.9'
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=mini
+    #   - MONGO_INITDB_ROOT_PASSWORD=1234
+    #   - MONGO_INITDB_DATABASE=mini_thon
+    networks:
+      - chatbot-network
+
+  model_training:
+    build: ./model_training
+    container_name: model_training
+    volumes:
+      - ./model_training:/app
+    environment:
+      - POSTGRES_DB=postgres
+    networks:
+      - chatbot-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  mlflow:
+    build: ./mlflow
+    container_name: mlflow
+    environment:
+      - BACKEND_STORE_URI=postgresql://postgres:password@postgres:5432/mlflow
+      - ARTIFACT_ROOT=s3://minio/mlflow
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./mlflow:/app
+    networks:
+      - chatbot-network
+
+  minio:
+    image: minio/minio:RELEASE.2024-07-31T05-46-26Z-cpuv1
+    container_name: minio
+    environment:
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=minio123
+    ports:
+      - "9000:9000"
+    command: server /data
+    networks:
+      - chatbot-network
+
+  postgres:
+    image: postgres:12.19
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - chatbot-network
+
+  streamlit_1:
+    build: ./streamlit_1
+    container_name: streamlit_1
+    volumes:
+      - ./streamlit_1:/app
+    ports:
+      - "8500:8500"
+      - "8501:8501"
+      - "8502:8502"
+      - "8503:8503"
+      - "8504:8504"
+      - "8505:8505"
+      - "8506:8506"
+      - "8507:8507"
+      - "8508:8508"
+      - "8509:8509"
+      - "8510:8510"
+    networks:
+      - chatbot-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    tty: true
+    stdin_open: true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8500/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  streamlit_2:
+    build: ./streamlit_2
+    container_name: streamlit_2
+    volumes:
+      - ./streamlit_2:/app
+    ports:
+      - "8511:8511"
+    networks:
+      - chatbot-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8511/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  streamlit_3:
+    build: ./streamlit_3
+    container_name: streamlit_3
+    volumes:
+      - ./streamlit_3:/app
+    ports:
+      - "8512:8512"
+    networks:
+      - chatbot-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8512/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  chatbot-network:
+
+volumes:
+  mongo_data:
+  postgres_data:

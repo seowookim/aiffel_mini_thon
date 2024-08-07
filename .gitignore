@@ -1,0 +1,6 @@
+.venv/**
+model_training/data/**
+model_training/wandb/**
+*.pyc
+*/.vscode/**
+
