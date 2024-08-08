@@ -130,7 +130,7 @@ def predict_answer(predicted_labels, input_text, model, tokenizer,
 
     return output_text
 
-
+#%% gen 언어 모델 반복 테스트 - 데이터 비율, 하이퍼 파라미터를 변경 했을때의 결과가 어떻게 달라지는지 확인
 # 결과를 저장할 리스트
 results = []
 batch_size = 10000
@@ -197,3 +197,33 @@ if results:
     df = pd.DataFrame(results)
     file_name = f'./data/grid_search_results_batch_{batch_number}.csv'
     df.to_csv(file_name, index=False, encoding='utf-8-sig')
+
+#%% 분류 모델 테스트 - 다양한 input을 넣었을때, 원하는 분류가 나오는지 확인
+
+# 결과를 저장할 리스트
+results_cls = []
+# 입력 문장
+input_texts = ['나 심심해', '나 배고파', '나 외로워', '나 힘들어', '나 화나', 
+               '나 슬퍼', '나 행복해', '나 좋아해', '나 싫어해', '나 무섭', 
+               '나 놀라', '나 부끄러워', '나 미안해', '나 기뻐', '나 황당해', 
+               '나 당황해', '나 불안해', '나 짜증나']
+
+thresholds = [0.5, 0.6, 0.7, 0.8, 0.9]
+
+# 모든 하이퍼파라미터 조합을 반복
+for input_text in input_texts:
+
+    for threshold in thresholds:
+        predicted_labels = predict_listener_empathy(input_text, cls_model, cls_tokenizer, threshold)
+
+        # 결과 저장
+        results_cls.append({
+            'input_text': input_text,
+            'threshold': threshold,
+            'predicted_labels': predicted_labels,
+        }) 
+
+# 결과 저장
+df = pd.DataFrame(results_cls)
+file_name = f'./data/grid_search_cls.csv'
+df.to_csv(file_name, index=False, encoding='utf-8-sig')
