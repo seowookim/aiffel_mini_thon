@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from tqdm import tqdm
-from transformers import PreTrainedTokenizerFast, BartForCausalLM, Trainer, TrainingArguments, EarlyStoppingCallback, AutoModelForQuestionAnswering
+from transformers import PreTrainedTokenizerFast,AutoTokenizer, BartForCausalLM, Trainer, TrainingArguments, EarlyStoppingCallback, AutoModelForQuestionAnswering
 from datasets import Dataset
 import wandb
 from peft import LoraConfig, TaskType, get_peft_model
@@ -15,7 +15,7 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 modelNm = 'kobert'
 epoch = 4 # 학습 횟수
 max_len = 256 # 문장 최대 길이
-DATA_SIZE = 0.1 # 수정 필요
+DATA_SIZE = 0.7 # 수정 필요
 USE_LORA = False
 
 # sweep 이름
