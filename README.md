@@ -21,19 +21,19 @@ Interestingly, advice was the most effective type of empathy that successfully c
 
 To evaluate whether chatbot's responses are relatable, we set three evalaution standards:  
 
-**Evaluation Criterion 1**
+**Evaluation Criterion 1**  
 Does the category of our output match the category of the original dataset's output when the same input is provided?
 
-**Evaluation Criterion 2**
-How close is the embedding distance between the original output and our generated output? using Voyage AI API.
+**Evaluation Criterion 2**  
+How close is the embedding distance between the original output and our generated output? (using Voyage AI API.)
 
-**Evaluation Criterion 3 (Human evaluation, wasn't measured for the shortage of time)**
-Did people's experiences actually shift toward a more positive direction?
+**Evaluation Criterion 3 (Human evaluation, wasn't measured for the shortage of time)**  
+Did people's experiences actually shift toward a more positive direction?  
 To what extent do people perceive the responses as human-like?
 
 ## [Model_training](model_training)  
 
-We run experiment ㅕ냐ㅜㅎ DistillKoBERT, KoBERT, and KoGPT2. Since KoGPT2 excelled in both classification and generation tasks, we selected KoGPT2 as our final model. In addition, due to the large size of our dataset, we applied LoRA model. 
+We run experiment using DistillKoBERT, KoBERT, and KoGPT2. Since KoGPT2 excelled in both classification and generation tasks, we selected KoGPT2 as our final model. In addition, due to the large size of our dataset, we applied LoRA model. 
 
 ### Contributor
 - Seowoo Kim: Managing, EDA, Evalaution 
